@@ -40,21 +40,6 @@ class Segment:
         return math.hypot(self.pt0.x - self.pt1.x, self.pt0.y - self.pt1.y)
 
     def __mod__(self, other: "Segment"):
-        # if (min(self.pt0.x, self.pt1.x) > max(other.pt0.x, other.pt1.x)
-        #         or min(other.pt0.x, other.pt1.x) > max(self.pt0.x, self.pt1.x)
-        #         or min(self.pt0.y, self.pt1.y) > max(other.pt0.y, other.pt1.y)
-        #         or min(other.pt0.y, other.pt1.y) > max(self.pt0.y, self.pt1.y)):
-        #     return self.pt1
-        # if (
-        #         (other.pt0.x - self.pt0.x) * (other.pt0.y - other.pt1.y)
-        #         - (other.pt0.y - self.pt0.y) * (other.pt0.x - other.pt1.x)) * (
-        #         (other.pt0.x - self.pt1.x) * (other.pt0.y - other.pt1.y)
-        #         - (other.pt0.y - self.pt1.y) * (other.pt0.x - other.pt1.x)) >= 0 and (
-        #         (self.pt0.x - other.pt0.x) * (self.pt0.y - self.pt1.y)
-        #         - (self.pt0.y - other.pt0.y) * (self.pt0.x - self.pt1.x)) * (
-        #         (self.pt0.x - other.pt1.x) * (self.pt0.y - self.pt1.y)
-        #         - (self.pt0.y - other.pt1.y) * (self.pt0.x - self.pt1.x)) >= 0:
-        #     return self.pt1
         d0 = self.pt1 - self.pt0
         d1 = other.pt1 - other.pt0
         diff = other.pt0 - self.pt0
@@ -71,22 +56,6 @@ class Segment:
                 return self.pt1
             return self.pt0 + d0 * s
         return self.pt1
-        # len_diff = diff.len
-        # kross_diff_d0 = diff.x * d0.y - d0.x * diff.y
-        # if kross_diff_d0 > Segment.EPSILON * len_diff * len_d0:
-        #     return self.pt1
-        # delta_1 = other.pt0 - self.pt0
-        # delta_2 = other.pt1 - self.pt0
-        # if delta_1.len < delta_2.len:
-        #     if delta_1.x * d0.x > 0 and delta_1.y * d0.y > 0:
-        #         return other.pt0
-        #     else:
-        #         return self.pt1
-        # else:
-        #     if delta_2.x * d0.x > 0 and delta_2.y * d0.y > 0:
-        #         return other.pt1
-        #     else:
-        #         return self.pt1
 
 
 class Structure:

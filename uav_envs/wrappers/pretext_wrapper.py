@@ -4,7 +4,6 @@ import gymnasium as gym
 import numpy as np
 import torch
 
-from uav_envs.uav_env_v2 import UAVEnvironment
 from pretext.cvae import PretextVAE
 
 
@@ -53,16 +52,3 @@ class PretextWrapper(gym.ObservationWrapper):
         else:
             observation = np.concatenate([observation, opponent_modeling], axis=-1)
         return observation
-
-
-if __name__ == "__main__":
-    env = UAVEnvironment((800, 800), intermediate_rewards=True, multi_agent=True)
-    env = PretextWrapper(env, pretext_dir='../../pretext/data/pretext_vae.pt')
-
-    for _ in range(1):
-        obs, info = env.reset()
-        done = False
-        while not done:
-            action = env.action_space.sample()
-            obs, reward, done, _, info = env.step(action)
-            print(obs.shape)
