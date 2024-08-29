@@ -3,7 +3,7 @@ from typing import Sequence
 import torch
 from torch import nn
 
-from model.impala_net import _ConvNetBlock
+from model.modules.impala_net import _ConvNetBlock
 
 
 class SquashDims(nn.Module):

@@ -1249,7 +1249,7 @@ class Actor:
 def astar_test(env: UAVEnvironment, episodes: int = 3, render: bool = False):
     if render:
         clock = pg.time.Clock()
-        
+
     for i in range(episodes):
         env.reset()
         done = False
@@ -1435,6 +1435,3 @@ if __name__ == "__main__":
         astar_test(env, args.episodes, args.render)
     else:
         rl_test(env, args.episodes, args.render)
-
-
-

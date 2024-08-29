@@ -1068,7 +1068,7 @@ class UavEnvironment(gym.Env):
         obs, reward, done, info = self.uav.step((speed_action, turn_action))
         obs = {
             'observation': obs,
-            'succeeded': info['done'] == 'goal_reached',
+            # 'succeeded': info['done'] == 'goal_reached',
         }
         for key in self.observation_space.spaces.keys():
             if key not in obs:
@@ -1236,7 +1236,7 @@ class UavEnvironment(gym.Env):
         obs = self.uav.state
         obs = {
             'observation': obs,
-            'succeeded': False,
+            # 'succeeded': False,
         }
         for key in self.observation_space.spaces.keys():
             if key not in obs:

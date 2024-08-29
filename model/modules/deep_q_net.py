@@ -2,9 +2,9 @@ from typing import Sequence
 
 from torch import nn
 
-from model.conv_encoder import ConvEncoder
-from model.dueling_head import DuelingHead
-from model.inverse_dynamics import InverseDynamic
+from model.modules.conv_encoder import ConvEncoder
+from model.modules.dueling_head import DuelingHead
+from model.modules.inverse_dynamics import InverseDynamic
 
 
 class DeepQNet(nn.Module):
