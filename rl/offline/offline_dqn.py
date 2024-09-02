@@ -7,7 +7,7 @@ from ray.rllib.algorithms.dqn import DQNConfig, DQN
 from ray.rllib.models import ModelCatalog
 from ray.tune import register_env
 
-from model.cnn_qnet_model import UavEncoder
+from model.uav_encoder import UavEncoder
 from envs.uav_env_v7 import UavEnvironment
 from envs.wrappers.pretext_wrapper import PretextWrapper
 from envs.wrappers.raster_wrapper import RasterWrapper
