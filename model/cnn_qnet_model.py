@@ -26,7 +26,6 @@ class CnnQNetModel(TorchModelV2, nn.Module):
             obs_space, action_space, num_outputs, model_config, name
         )
         action_num = action_space.n
-        # hidden_dim: int = model_config.get('fcnet_hiddens', [256])[0]
         hidden_dim: int = model_config['custom_model_config'].get('hidden_dim', 256)
         raster_shape: Sequence[int] = model_config['custom_model_config'].get('raster_shape', (16, 16, 16))
         cnn_channels: Sequence[int] = model_config['custom_model_config'].get('cnn_channels', (32, 64, 128))
@@ -54,10 +53,8 @@ class CnnQNetModel(TorchModelV2, nn.Module):
         )
 
     def forward(self, input_dict: dict[str, dict[str, torch.Tensor]], state, seq_lens):
-        # print(input_dict)
         observation, raster = input_dict['obs']['observation'], input_dict['obs']['raster']
         embed = self.encoder(observation, raster)
-        # q_values = self.q_head(embed)
         return embed, state
 
     def custom_loss(
@@ -68,14 +65,15 @@ class CnnQNetModel(TorchModelV2, nn.Module):
         rast_t = loss_inputs['obs'][:, self.vec_dim:].reshape(batch_size, *self.raster_shape)
         obs_tp1 = loss_inputs['new_obs'][:, :self.vec_dim]
         rast_tp1 = loss_inputs['new_obs'][:, self.vec_dim:].reshape(batch_size, *self.raster_shape)
-        action_precict = self.inverse_dynamics(obs_t, rast_t, obs_tp1, rast_tp1)
+        action_predict = self.inverse_dynamics(obs_t, rast_t, obs_tp1, rast_tp1)
         action_t = loss_inputs['actions']
         if isinstance(loss_inputs['actions'], list):
             action_t = torch.tensor(action_t, dtype=torch.int64).to(obs_t.device())
         action_t = action_t.to(torch.int64)
         actions_one_hot = F.one_hot(action_t, num_classes=self.action_num).to(torch.float32)
-        self_supervised_loss = F.cross_entropy(action_precict, actions_one_hot)
-        return [self_supervised_loss]
+        self_supervised_loss = F.cross_entropy(action_predict, actions_one_hot)
+        policy_loss[0] += 0.25 * self_supervised_loss
+        return policy_loss
 
     def inverse_dynamics(self, s_t, r_t, s_tp1, r_tp1):
         embed_t = self.encoder(s_t, r_t)

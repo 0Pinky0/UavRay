@@ -5,7 +5,7 @@ import json
 import numpy as np
 
 from uav_envs.wrappers.offline_data_wrapper import OfflineDataCollector
-from uav_envs.uav_env_v5 import UAVEnvironment
+from uav_envs.uav_env_v7 import UavEnvironment
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -30,7 +30,7 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-env = UAVEnvironment(
+env = UavEnvironment(
     (800, 800),
     args.fixed_obstacle_number,
     args.dynamic_obstacle_number,

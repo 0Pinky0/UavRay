@@ -30,6 +30,7 @@ dependencies = [
     "omegaconf",
     "opencv-python",
     "gputil",
+    "tqdm",
     "ray==2.8.1",
     "ray[default]",
     "ray[train]",
