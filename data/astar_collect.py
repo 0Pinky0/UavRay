@@ -7,7 +7,7 @@ from ray.rllib.evaluation.sample_batch_builder import SampleBatchBuilder
 from ray.rllib.models.preprocessors import get_preprocessor
 from ray.rllib.offline.json_writer import JsonWriter
 
-from data.astar_solver import AstarActor
+from data.astar_actor import AstarActor
 from envs.uav_env_v7 import UavEnvironment
 from envs.wrappers.pretext_wrapper import PretextWrapper
 from envs.wrappers.raster_wrapper import RasterWrapper
