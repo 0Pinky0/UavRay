@@ -3,7 +3,7 @@ from collections import deque
 import numpy as np
 from tqdm import trange
 
-from uav_envs.uav_env_v6 import UAVEnvironment
+from envs.uav_env_v6 import UAVEnvironment
 
 len_dataset = 30000
 seq_len = 20

@@ -6,13 +6,13 @@ from ray.rllib.algorithms.dqn import DQNConfig, DQN
 from ray.rllib.models import ModelCatalog
 from ray.tune import register_env
 
-from model.cnn_qnet_model import CnnQNetModel
-from uav_envs.uav_env_v7 import UavEnvironment
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from model.cnn_qnet_model import UavEncoder
+from envs.uav_env_v7 import UavEnvironment
+from envs.wrappers.pretext_wrapper import PretextWrapper
+from envs.wrappers.raster_wrapper import RasterWrapper
 
-base_dir = Path(__file__).parent.parent
-env_cfg = yaml.load(open(f'{base_dir}/configs/env_config.yaml'), Loader=yaml.FullLoader)["env"]
+base_dir = Path(__file__).parent.parent.parent
+env_cfg = yaml.load(open(f'{base_dir}/configs/env_online_config.yaml'), Loader=yaml.FullLoader)["env"]
 
 register_env(
     "UavEnv",
@@ -20,7 +20,7 @@ register_env(
         PretextWrapper(UavEnvironment(**cfg["params"]), pretext_dir=f'{base_dir}/{cfg["pretext_dir"]}')
     )
 )
-ModelCatalog.register_custom_model("cnn_qnet", CnnQNetModel)
+ModelCatalog.register_custom_model("uav_encoder", UavEncoder)
 hidden_dim = 256
 
 config = (
@@ -35,7 +35,7 @@ config = (
             "prioritized_replay_eps": 3e-6,
         },
         model={
-            "custom_model": "cnn_qnet",
+            "custom_model": "uav_encoder",
             "custom_model_config": {
                 'hidden_dim': hidden_dim,
                 "raster_shape": (16, 16, 16),

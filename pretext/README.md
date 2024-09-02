@@ -12,7 +12,7 @@
 
 ````python
 import torch
-from uav_envs.uav_env_v2 import UAVEnvironment
+from envs.uav_env_v2 import UAVEnvironment
 from pretext.cvae import PretextVAE
 from torchrl_utils.model.deep_q_net import DeepQNet
 from collections import deque

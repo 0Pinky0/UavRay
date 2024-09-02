@@ -13,7 +13,7 @@ from model.modules.inverse_dynamics import InverseDynamic
 import gymnasium as gym
 
 
-class CnnQNetModel(TorchModelV2, nn.Module):
+class UavEncoder(TorchModelV2, nn.Module):
     def __init__(self,
                  obs_space: gym.spaces.Space,
                  action_space: gym.spaces.Space,
@@ -22,16 +22,17 @@ class CnnQNetModel(TorchModelV2, nn.Module):
                  name: str,
                  **kwargs):
         nn.Module.__init__(self)
-        super(CnnQNetModel, self).__init__(
+        super(UavEncoder, self).__init__(
             obs_space, action_space, num_outputs, model_config, name
         )
         action_num = action_space.n
-        hidden_dim: int = model_config['custom_model_config'].get('hidden_dim', 256)
-        raster_shape: Sequence[int] = model_config['custom_model_config'].get('raster_shape', (16, 16, 16))
-        cnn_channels: Sequence[int] = model_config['custom_model_config'].get('cnn_channels', (32, 64, 128))
-        kernel_sizes: Sequence[int] = model_config['custom_model_config'].get('kernel_sizes', (3, 3, 3))
-        strides: Sequence[int] = model_config['custom_model_config'].get('strides', (1, 1, 1))
-        vec_dim: int = model_config['custom_model_config'].get('vec_dim', 50)
+        custom_model_config = model_config['custom_model_config']
+        hidden_dim: int = custom_model_config.get('hidden_dim', 256)
+        raster_shape: Sequence[int] = custom_model_config.get('raster_shape', (16, 16, 16))
+        cnn_channels: Sequence[int] = custom_model_config.get('cnn_channels', (32, 64, 128))
+        kernel_sizes: Sequence[int] = custom_model_config.get('kernel_sizes', (3, 3, 3))
+        strides: Sequence[int] = custom_model_config.get('strides', (1, 1, 1))
+        vec_dim: int = custom_model_config.get('vec_dim', 50)
         self.action_num = action_num
         self.raster_shape = raster_shape
         self.vec_dim = vec_dim

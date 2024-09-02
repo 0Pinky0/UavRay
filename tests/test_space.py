@@ -3,10 +3,10 @@ from pathlib import Path
 
 import yaml
 
-from uav_envs.uav_env_v7 import UavEnvironment
-from uav_envs.wrappers.action_wrapper import ActionSpaceWrapper
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from envs.uav_env_v7 import UavEnvironment
+from envs.wrappers.action_wrapper import ActionSpaceWrapper
+from envs.wrappers.pretext_wrapper import PretextWrapper
+from envs.wrappers.raster_wrapper import RasterWrapper
 
 base_dir = Path(__file__).parent.parent
 env_cfg = yaml.load(open(f'{base_dir}/configs/env_config.yaml'), Loader=yaml.FullLoader)['env']

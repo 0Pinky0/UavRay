@@ -2,16 +2,15 @@ import os
 from pathlib import Path
 
 import numpy as np
-import ray._private.utils
 import yaml
 from ray.rllib.evaluation.sample_batch_builder import SampleBatchBuilder
 from ray.rllib.models.preprocessors import get_preprocessor
 from ray.rllib.offline.json_writer import JsonWriter
 
-from offline.astar_solver import AstarActor
-from uav_envs.uav_env_v7 import UavEnvironment
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from data.astar_solver import AstarActor
+from envs.uav_env_v7 import UavEnvironment
+from envs.wrappers.pretext_wrapper import PretextWrapper
+from envs.wrappers.raster_wrapper import RasterWrapper
 
 base_dir = Path(__file__).parent.parent
 env_cfg = yaml.load(open(f'{base_dir}/configs/env_astar_config.yaml'), Loader=yaml.FullLoader)["env"]

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from uav_envs.uav_env_v7 import UavAgent, UavEnvironment, calculate_angle_between_vectors, DynamicObstacle, \
+from envs.uav_env_v7 import UavAgent, UavEnvironment, calculate_angle_between_vectors, DynamicObstacle, \
     DYNAMIC_SCALE_DETECT
 
 

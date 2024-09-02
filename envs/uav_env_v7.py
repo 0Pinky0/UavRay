@@ -12,7 +12,7 @@ import pygame as pg
 import pygame.freetype as pgft
 from gymnasium.utils import seeding
 
-from uav_envs.utils.lidar import Point2d, Structure, Lidar
+from envs.utils.lidar import Point2d, Structure, Lidar
 
 # from scipy.interpolate import splev, splrep
 # from scipy.optimize import curve_fit

@@ -1,11 +1,11 @@
 from ray.rllib.algorithms.dqn.dqn_torch_model import DQNTorchModel
 from ray.rllib.models import ModelCatalog
 
-from model.cnn_qnet_model import CnnQNetModel
-from uav_envs.uav_env_v7 import UavEnvironment
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from model.cnn_qnet_model import UavEncoder
+from envs.uav_env_v7 import UavEnvironment
+from envs.wrappers.raster_wrapper import RasterWrapper
 
-ModelCatalog.register_custom_model("cnn_qnet", CnnQNetModel)
+ModelCatalog.register_custom_model("cnn_qnet", UavEncoder)
 env = RasterWrapper(UavEnvironment())
 action_space = env.action_space
 obs_space = env.observation_space

@@ -4,8 +4,8 @@ import json
 
 import numpy as np
 
-from uav_envs.wrappers.offline_data_wrapper import OfflineDataCollector
-from uav_envs.uav_env_v7 import UavEnvironment
+from envs.wrappers.offline_data_wrapper import OfflineDataCollector
+from envs.uav_env_v7 import UavEnvironment
 
 
 class NumpyEncoder(json.JSONEncoder):
