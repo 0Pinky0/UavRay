@@ -2,15 +2,15 @@ import json
 from pathlib import Path
 
 import yaml
-from ray.rllib import Policy
-from ray.rllib.algorithms.dqn import DQNConfig, DQN
+from ray.rllib.algorithms import Algorithm
+from ray.rllib.algorithms.dqn import DQNConfig
 from ray.rllib.models import ModelCatalog
 from ray.tune import register_env
 
-from model.uav_encoder import UavEncoder
 from envs.uav_env_v7 import UavEnvironment
 from envs.wrappers.pretext_wrapper import PretextWrapper
 from envs.wrappers.raster_wrapper import RasterWrapper
+from model.uav_encoder import UavEncoder
 
 base_dir = Path(__file__).parent.parent.parent
 env_cfg = yaml.load(open(f'{base_dir}/configs/env_online_config.yaml'), Loader=yaml.FullLoader)["env"]
@@ -23,6 +23,14 @@ register_env(
 )
 ModelCatalog.register_custom_model("uav_encoder", UavEncoder)
 hidden_dim = 256
+
+
+def get_policy_weights_from_checkpoint(checkpoint):
+    loaded_weights = Algorithm.from_checkpoint(checkpoint).get_policy().get_weights()
+    return {
+        'default_policy': loaded_weights
+    }
+
 
 config = (
     DQNConfig()
@@ -55,13 +63,7 @@ config = (
     .rollouts(num_rollout_workers=3)
     .environment("UavEnv", env_config=env_cfg)
 )
-# algo = config.build()
-algo = DQN(config=config)
+algo = config.build()
+algo.set_weights(get_policy_weights_from_checkpoint('./ckpt'))
 result = algo.train()
-save_result = algo.save('./ckpt')
-path_to_checkpoint = save_result.checkpoint.path
-print(
-    "An Algorithm checkpoint has been created inside directory: "
-    f"'{path_to_checkpoint}'."
-)
 print(json.dumps(str(result), sort_keys=False, indent=4))

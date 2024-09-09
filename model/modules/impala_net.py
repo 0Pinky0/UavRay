@@ -1,3 +1,5 @@
+from typing import Optional, Type
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -5,13 +7,18 @@ import torch.nn.functional as F
 
 class _ResNetBlock(nn.Module):
     def __init__(
-        self,
-        num_in,
-        num_ch,
+            self,
+            num_in: int,
+            num_ch: int,
+            activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+            activation_kwargs: Optional[dict] = None,
     ):
         super(_ResNetBlock, self).__init__()
+        if not activation_kwargs:
+            activation_kwargs = {}
         resnet_block = []
-        resnet_block.append(nn.ReLU(inplace=False))
+        if activation_class:
+            resnet_block.append(activation_class(**activation_kwargs))
         resnet_block.append(
             nn.Conv2d(
                 in_channels=num_in,
@@ -21,7 +28,8 @@ class _ResNetBlock(nn.Module):
                 padding=1,
             )
         )
-        resnet_block.append(nn.ReLU(inplace=False))
+        if activation_class:
+            resnet_block.append(activation_class(**activation_kwargs))
         resnet_block.append(
             nn.Conv2d(
                 in_channels=num_ch,
@@ -34,8 +42,8 @@ class _ResNetBlock(nn.Module):
         self.seq = nn.Sequential(*resnet_block)
 
     def forward(self, x):
-        x += self.seq(x)
-        return x
+        y = x + self.seq(x)
+        return y
 
 
 class _ConvNetBlock(nn.Module):
@@ -63,14 +71,14 @@ class _ConvNetBlock(nn.Module):
 
 class ImpalaNet(nn.Module):  # noqa: D101
     def __init__(
-        self,
-        num_actions,
-        channels=(16, 32, 32),
-        out_features=256,
-        use_lstm=False,
-        batch_first=True,
-        clamp_reward=True,
-        one_hot=False,
+            self,
+            num_actions,
+            channels=(16, 32, 32),
+            out_features=256,
+            use_lstm=False,
+            batch_first=True,
+            clamp_reward=True,
+            one_hot=False,
     ):
         super().__init__()
         self.batch_first = batch_first
