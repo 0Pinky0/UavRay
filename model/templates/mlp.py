@@ -1,8 +1,9 @@
-from numbers import Number
 from typing import Optional, Sequence, Type, Tuple
 
 import torch
 from torch import nn
+
+from .activations import get_activation_class
 
 
 class MLP(nn.Sequential):
@@ -10,9 +11,11 @@ class MLP(nn.Sequential):
                  out_features: int,
                  in_features: Optional[int] = None,
                  num_cells: Sequence[int] = (),
-                 activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+                 activation_class: Optional[Type[nn.Module] | str] = nn.ReLU,
                  activation_kwargs: Optional[dict] = None,
                  activate_last_layer: bool = False):
+        if isinstance(activation_class, str):
+            activation_class = get_activation_class(activation_class)
         if not activation_kwargs:
             activation_kwargs = {}
         self.out_features = out_features

@@ -3,6 +3,8 @@ from typing import Optional, Sequence, Type
 import torch
 from torch import nn
 
+from .activations import get_activation_class
+
 
 class SquashDims(nn.Module):
     def __init__(self, ndims_in: int = 3):
@@ -16,24 +18,29 @@ class SquashDims(nn.Module):
 
 class ConvNet(nn.Sequential):
     def __init__(self,
-                 in_channels: Optional[int],
+                 in_channels: Optional[int] = None,
                  num_channels: Sequence[int] = (),
-                 kernel_sizes: Sequence[int] = (),
-                 strides: Sequence[int] = (),
-                 paddings: Sequence[int] = (),
-                 activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+                 kernel_sizes: Sequence[int] | int = 3,
+                 strides: Sequence[int] | int = 1,
+                 paddings: Sequence[int] | int = 0,
+                 activation_class: Optional[Type[nn.Module] | str] = nn.ReLU,
                  activation_kwargs: Optional[dict] = None,
                  norm_class: Optional[Type[nn.Module]] = None,
                  norm_kwargs: Optional[dict] = None,
                  squash_last_layer: bool = True):
-        assert len(num_channels) == len(kernel_sizes), \
-            f"kernel_sizes, strides, paddings must have same length, but got {len(num_channels)} and {len(kernel_sizes)}."
-        assert len(kernel_sizes) == len(strides), \
-            f"kernel_sizes, strides, paddings must have same length, but got {len(kernel_sizes)} and {len(strides)}."
-        assert len(strides) == len(paddings), \
-            f"kernel_sizes, strides, paddings must have same length, but got {len(strides)} and {len(paddings)}."
+        if isinstance(activation_class, str):
+            activation_class = get_activation_class(activation_class)
         if not activation_kwargs:
             activation_kwargs = {}
+        depth = len(num_channels)
+        if isinstance(kernel_sizes, int):
+            kernel_sizes = [kernel_sizes] * depth
+        if isinstance(strides, int):
+            strides = [strides] * depth
+        if isinstance(paddings, int):
+            paddings = [paddings] * depth
+        assert len(kernel_sizes) == depth and len(strides) == depth and len(paddings) == depth, \
+            "Not all parameters of conv2d are of the same length"
         layers = []
         _in = in_channels
         for _out, _kernel, _stride, _padding in zip(num_channels, kernel_sizes, strides, paddings):

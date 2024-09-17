@@ -3,13 +3,17 @@ from typing import Optional, Type
 import torch
 import torch.nn as nn
 
+from .activations import get_activation_class
+
 
 class ResNetBlock(nn.Module):
     def __init__(self,
                  num_ch: int,
-                 activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+                 activation_class: Optional[Type[nn.Module] | str] = nn.ReLU,
                  activation_kwargs: Optional[dict] = None):
         super(ResNetBlock, self).__init__()
+        if isinstance(activation_class, str):
+            activation_class = get_activation_class(activation_class)
         if not activation_kwargs:
             activation_kwargs = {}
         resnet_block = []
@@ -48,9 +52,11 @@ class ConvNetBlock(nn.Module):
                  stride=1,
                  max_stride=2,
                  padding=1,
-                 activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+                 activation_class: Optional[Type[nn.Module] | str] = nn.ReLU,
                  activation_kwargs: Optional[dict] = None):
         super().__init__()
+        if isinstance(activation_class, str):
+            activation_class = get_activation_class(activation_class)
         if not activation_kwargs:
             activation_kwargs = {}
         conv = nn.LazyConv2d(
@@ -78,8 +84,12 @@ class ConvNetBlock(nn.Module):
 class ImpalaNet(nn.Sequential):
     def __init__(self,
                  channels=(16, 32, 32),
-                 activation_class: Optional[Type[nn.Module]] = nn.Tanh,
+                 activation_class: Optional[Type[nn.Module] | str] = nn.ReLU,
                  activation_kwargs: Optional[dict] = None):
+        if isinstance(activation_class, str):
+            activation_class = get_activation_class(activation_class)
+        if not activation_kwargs:
+            activation_kwargs = {}
         layers = [ConvNetBlock(num_ch,
                                activation_class=activation_class,
                                activation_kwargs=activation_kwargs) for num_ch in channels]

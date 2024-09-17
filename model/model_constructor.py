@@ -1,5 +1,8 @@
 from typing import Any, Sequence
 
+from tensordict import TensorDict
+from tensordict.nn import TensorDictModule, TensorDictSequential
+
 from model.templates import (
     MLP,
     ConvNet,
@@ -18,7 +21,6 @@ model_mapping = {
     'lstm': nn.LSTM,
     'gru': nn.GRU,
     'transformer': nn.Transformer,
-    # 'auto_encoder': AutoEncoder,
 }
 default_configs = {
     'mlp': {
@@ -88,11 +90,14 @@ default_configs = {
 }
 
 
-def get_model(model_configs: Sequence[dict[str, Any]]) -> nn.Module:
+def get_constructed_model(model_configs: Sequence[dict[str, Any]]) -> TensorDictSequential:
     layers = []
     for model_config in model_configs:
-        layers.append(model_mapping[model_config['model_name']](**model_config['model_config']))
-    model = nn.Sequential(*layers)
+        model = model_mapping[model_config['model_name']](**model_config['model_config'])
+        model = TensorDictModule(model, model_config['in_keys'], model_config['out_keys'])
+        layers.append(model)
+    # model = nn.Sequential(*layers)
+    model = TensorDictSequential(*layers)
     return model
 
 
@@ -100,34 +105,36 @@ if __name__ == '__main__':
     test_model_configs = (
         {
             'model_name': 'conv_net',
+            'in_keys': ['raster'],
+            'out_keys': ['logits'],
             'model_config': {
-                'in_channels': 3,
                 'num_channels': (16, 32, 64),
-                'kernel_sizes': (3, 3, 3),
-                'strides': (1, 1, 1),
-                'paddings': (0, 0, 0),
-                'activation_class': nn.Tanh,
-                'activation_kwargs': None,
-                'norm_class': None,
-                'norm_kwargs': None,
+                'kernel_sizes': 3,
+                'activation_class': 'relu',
                 'squash_last_layer': True,
             },
         },
         {
             'model_name': 'mlp',
+            'in_keys': ['logits', 'observation'],
+            'out_keys': ['logits'],
             'model_config': {
-                'in_features': None,
                 'out_features': 1,
                 'num_cells': (512, 256),
-                'activation_class': nn.Tanh,
-                'activation_kwargs': None,
+                'activation_class': 'relu',
                 'activate_last_layer': False,
             },
         },
     )
-    test_model = get_model(test_model_configs)
-    dummy_data = torch.zeros([32, 3, 16, 16])
+    test_model = get_constructed_model(test_model_configs)
+    # dummy_data = torch.zeros([32, 3, 16, 16])
+    dummy_data = {
+        'raster': torch.zeros([32, 3, 16, 16]),
+        'observation': torch.zeros([32, 8])
+    }
+    dummy_data = TensorDict(dummy_data)
     out = test_model(dummy_data)
     print(test_model)
-    print(out.shape)
+    for key, value in out.items():
+        print(f'{key}: {value.shape}')
     # pass

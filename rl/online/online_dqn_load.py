@@ -6,6 +6,7 @@ from ray.rllib.algorithms import Algorithm
 from ray.rllib.algorithms.dqn import DQNConfig
 from ray.rllib.models import ModelCatalog
 from ray.tune import register_env
+from torch import nn
 
 from envs.uav_env_v7 import UavEnvironment
 from envs.wrappers.pretext_wrapper import PretextWrapper
@@ -46,12 +47,29 @@ config = (
         model={
             "custom_model": "uav_encoder",
             "custom_model_config": {
-                'hidden_dim': hidden_dim,
-                "raster_shape": (16, 16, 16),
-                "vec_dim": 52,
-                "cnn_channels": (32, 64, 128),
-                "kernel_sizes": (3, 3, 3),
-                "strides": (1, 1, 1),
+                'encoder_config': [
+                    {
+                        'model_name': 'conv_net',
+                        'in_keys': ['raster'],
+                        'out_keys': ['logits'],
+                        'model_config': {
+                            'num_channels': (16, 32, 64),
+                            'kernel_sizes': 3,
+                            'activation_class': 'relu',
+                            'squash_last_layer': True,
+                        },
+                    },
+                    {
+                        'model_name': 'mlp',
+                        'in_keys': ['logits', 'observation'],
+                        'out_keys': ['logits'],
+                        'model_config': {
+                            'out_features': hidden_dim,
+                            'activation_class': 'relu',
+                            'activate_last_layer': True,
+                        },
+                    },
+                ]
             },
         },
         double_q=True,
