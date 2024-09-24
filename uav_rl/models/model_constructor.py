@@ -3,7 +3,7 @@ from typing import Any, Sequence
 from tensordict import TensorDict
 from tensordict.nn import TensorDictModule, TensorDictSequential
 
-from model.templates import (
+from models.templates import (
     MLP,
     ConvNet,
     ResNetBlock,

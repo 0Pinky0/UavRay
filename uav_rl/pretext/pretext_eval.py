@@ -1,7 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
 
-from pretext.cvae import PretextVAE
 from pretext.pretext_dataset import PretextDataset
 
 epoch = 200
