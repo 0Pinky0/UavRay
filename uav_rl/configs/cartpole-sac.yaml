@@ -1,0 +1,30 @@
+train:
+  load_weights: False
+  offline: False
+env:
+  env: CartPole-v1
+model: [
+  {
+    model_name: 'mlp',
+    in_keys: [ 'observation' ],
+    out_keys: [ 'logits' ],
+    model_config: {
+      out_features: 256,
+      activation_class: 'relu',
+      activate_last_layer: True,
+    },
+  },
+]
+algo:
+  name: SAC
+  training:
+    lr: 3.0e-4
+    train_batch_size: 32
+    twin_q: True
+    initial_alpha: 1.0
+    target_entropy: null
+stop:
+  training_iteration: 10_000
+  timesteps_total: 100_000
+  episode_reward_mean: 1000.0
+

@@ -14,7 +14,7 @@ from torch import nn
 
 model_mapping = {
     'mlp': MLP,
-    'conv_net': ConvNet,
+    'cnn': ConvNet,
     'resnet_block': ResNetBlock,
     'impala_net': ImpalaNet,
     'rnn': nn.RNN,

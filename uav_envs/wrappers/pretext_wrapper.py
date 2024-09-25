@@ -4,7 +4,7 @@ import gymnasium as gym
 import numpy as np
 import torch
 
-from pretext.cvae import PretextVAE
+from models.pretext import PretextVAE
 
 
 class PretextWrapper(gym.ObservationWrapper):

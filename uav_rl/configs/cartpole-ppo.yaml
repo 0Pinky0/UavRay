@@ -1,0 +1,29 @@
+train:
+  load_weights: False
+  offline: False
+env:
+  env: CartPole-v1
+model: [
+  {
+    model_name: 'mlp',
+    in_keys: [ 'observation' ],
+    out_keys: [ 'logits' ],
+    model_config: {
+      out_features: 256,
+      activation_class: 'tanh',
+      activate_last_layer: True,
+    },
+  },
+]
+algo:
+  name: PPO
+  training:
+    lr: 3.0e-4
+    train_batch_size: 4000
+    sgd_minibatch_size: 128
+    vf_loss_coeff: 0.01
+stop:
+  training_iteration: 10_000
+  timesteps_total: 100_000
+  episode_reward_mean: 1000.0
+

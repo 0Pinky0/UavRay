@@ -9,11 +9,11 @@ from ray.rllib.utils.typing import ModelConfigDict, TensorType
 from tensordict import TensorDict
 from torch import nn
 
-from models.model_constructor import get_constructed_model
+from models.templates.model_constructor import get_constructed_model
 from models.modules.inverse_dynamics import InverseDynamic
 
 
-class UavEncoder(TorchModelV2, nn.Module):
+class DqnModel(TorchModelV2, nn.Module):
     def __init__(self,
                  obs_space: gym.spaces.Space,
                  action_space: gym.spaces.Space,
@@ -21,14 +21,13 @@ class UavEncoder(TorchModelV2, nn.Module):
                  model_config: ModelConfigDict,
                  name: str):
         nn.Module.__init__(self)
-        super(UavEncoder, self).__init__(
+        super(DqnModel, self).__init__(
             obs_space, action_space, num_outputs, model_config, name
         )
         action_num = action_space.n
-        self.action_num = action_num
         custom_model_config = model_config['custom_model_config']
         self.use_inverse_dynamic = custom_model_config['use_inverse_dynamic']
-        hidden_dim: int = custom_model_config.get('hidden_dim', 256)
+        hidden_dim: int = custom_model_config['encoder_config'][-1]['model_config']['out_features']
 
         self.encoder = get_constructed_model(custom_model_config['encoder_config'])
         with torch.no_grad():
@@ -40,7 +39,6 @@ class UavEncoder(TorchModelV2, nn.Module):
             hidden_dim=hidden_dim,
             action_num=action_num,
         )
-        self.value_head = nn.Linear(hidden_dim, 1)
 
     def forward(self, input_dict: dict[str, dict[str, torch.Tensor]], state=None, seq_lens=None):
         if isinstance(input_dict, dict) and 'obs' in input_dict:
@@ -77,6 +75,3 @@ class UavEncoder(TorchModelV2, nn.Module):
         embed_tp1, _ = self.forward(obs_tp1)
         predicted_action = self.inverse_dynamics_model(embed_t, embed_tp1)
         return predicted_action
-
-    def value_function(self) -> TensorType:
-        pass

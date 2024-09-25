@@ -1,0 +1,48 @@
+train:
+  load_weights: False
+  offline: False
+env:
+  env: ALE/SpaceInvaders-v5
+model: [
+  {
+    model_name: 'cnn',
+    in_keys: [ 'observation' ],
+    out_keys: [ 'logits' ],
+    model_config: {
+      num_channels: [ 16, 32, 64 ],
+      kernel_sizes: 3,
+      activation_class: 'relu',
+      squash_last_layer: True,
+    },
+  },
+  {
+    model_name: 'mlp',
+    in_keys: [ 'logits' ],
+    out_keys: [ 'logits' ],
+    model_config: {
+      out_features: 256,
+      activation_class: 'relu',
+      activate_last_layer: True,
+    },
+  },
+]
+algo:
+  name: DQN
+  training:
+    lr: 3.0e-4
+    train_batch_size: 32
+    double_q: True
+    dueling: True
+    n_step: 3
+    hiddens: [ 256 ]
+    replay_buffer_config:
+      type: MultiAgentPrioritizedReplayBuffer
+      capacity: 60000
+      prioritized_replay_alpha: 0.9
+      prioritized_replay_beta: 0.6
+      prioritized_replay_eps: 3.0e-6
+stop:
+  training_iteration: 10_000
+  timesteps_total: 100_000
+  episode_reward_mean: 1000.0
+

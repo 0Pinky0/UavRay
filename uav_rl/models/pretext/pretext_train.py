@@ -1,8 +1,8 @@
 import torch
 from torch.utils.data import DataLoader
 
-from pretext.cvae import PretextVAE
-from pretext.pretext_dataset import PretextDataset
+from models.pretext.cvae import PretextVAE
+from models.pretext.pretext_dataset import PretextDataset
 
 epoch = 100
 batch_size = 1024

@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 
-from pretext.pretext_dataset import PretextDataset
+from models.pretext.pretext_dataset import PretextDataset
 
 epoch = 200
 batch_size = 1024
