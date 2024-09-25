@@ -27,6 +27,7 @@ class SacModel(TorchModelV2, nn.Module):
         action_num = action_space.n
         custom_model_config = model_config['custom_model_config']
         self.use_inverse_dynamic = custom_model_config['use_inverse_dynamic']
+        self.channels_last = custom_model_config['channels_last']
         hidden_dim: int = custom_model_config['encoder_config'][-1]['model_config']['out_features']
 
         self.encoder = get_constructed_model(custom_model_config['encoder_config'])
@@ -44,6 +45,9 @@ class SacModel(TorchModelV2, nn.Module):
     def forward(self, input_dict: dict[str, dict[str, torch.Tensor]], state=None, seq_lens=None):
         if isinstance(input_dict, dict) and 'obs' in input_dict:
             input_dict = input_dict['obs']
+        if self.channels_last:
+            input_dict = input_dict.permute(0, 3, 1, 2)
+        input_dict = input_dict.to(torch.float32)
         if isinstance(input_dict, dict):
             input = TensorDict(input_dict)
         else:

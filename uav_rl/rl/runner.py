@@ -9,18 +9,15 @@ import common  # noqa
 from rl.common import get_policy_weights_from_checkpoint, get_model_class, get_config_cls
 
 ckpt_dir = './ckpt'
-train_one_step = True
+train_one_step = False
 
 base_dir = Path(__file__).parent.parent
-run_cfg = yaml.load(open(f'../configs/atari-dqn.yaml'), Loader=yaml.FullLoader)
+run_cfg = yaml.load(open(f'../configs/atari-sac.yaml'), Loader=yaml.FullLoader)
 run_cfg['algo']['training'].update({
     '_enable_learner_api': False,
     'model': {
         'custom_model': get_model_class(run_cfg['algo']['name']),
-        'custom_model_config': {
-            'use_inverse_dynamic': False,
-            'encoder_config': run_cfg['model'],
-        }
+        'custom_model_config': run_cfg['model']
     }
 })
 if run_cfg['algo']['name'] == 'SAC':
@@ -29,6 +26,24 @@ if run_cfg['algo']['name'] == 'SAC':
         'policy_model_config': run_cfg['algo']['training']['model'],
         'q_model_config': run_cfg['algo']['training']['model'],
     })
+
+'''
+if args.evaluation_interval > 0:
+    config
+    .evaluation(
+        evaluation_num_env_runners=args.evaluation_num_env_runners,
+        evaluation_interval=args.evaluation_interval,
+        evaluation_duration=args.evaluation_duration,
+        evaluation_duration_unit=args.evaluation_duration_unit,
+        evaluation_parallel_to_training=args.evaluation_parallel_to_training,
+    )
+    .reporting(
+        metrics_num_episodes_for_smoothing=(args.num_gpus or 1),
+        report_images_and_videos=False,
+        report_dream_data=False,
+        report_individual_batch_item_stats=False,
+    )
+'''
 
 if __name__ == '__main__':
     config = (

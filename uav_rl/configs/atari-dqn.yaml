@@ -3,29 +3,33 @@ train:
   offline: False
 env:
   env: ALE/SpaceInvaders-v5
-model: [
-  {
-    model_name: 'cnn',
-    in_keys: [ 'observation' ],
-    out_keys: [ 'logits' ],
-    model_config: {
-      num_channels: [ 16, 32, 64 ],
-      kernel_sizes: 3,
-      activation_class: 'relu',
-      squash_last_layer: True,
+  is_atari: True
+model:
+  use_inverse_dynamic: False
+  channels_last: True
+  encoder_config: [
+    {
+      model_name: 'cnn',
+      in_keys: [ 'observation' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        num_channels: [ 16, 32, 64 ],
+        kernel_sizes: 3,
+        activation_class: 'relu',
+        squash_last_layer: True,
+      },
     },
-  },
-  {
-    model_name: 'mlp',
-    in_keys: [ 'logits' ],
-    out_keys: [ 'logits' ],
-    model_config: {
-      out_features: 256,
-      activation_class: 'relu',
-      activate_last_layer: True,
+    {
+      model_name: 'mlp',
+      in_keys: [ 'logits' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        out_features: 256,
+        activation_class: 'relu',
+        activate_last_layer: True,
+      },
     },
-  },
-]
+  ]
 algo:
   name: DQN
   training:

@@ -3,18 +3,21 @@ train:
   offline: False
 env:
   env: CartPole-v1
-model: [
-  {
-    model_name: 'mlp',
-    in_keys: [ 'observation' ],
-    out_keys: [ 'logits' ],
-    model_config: {
-      out_features: 256,
-      activation_class: 'relu',
-      activate_last_layer: True,
+model:
+  use_inverse_dynamic: False
+  channels_last: False
+  encoder_config: [
+    {
+      model_name: 'mlp',
+      in_keys: [ 'observation' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        out_features: 256,
+        activation_class: 'relu',
+        activate_last_layer: True,
+      },
     },
-  },
-]
+  ]
 algo:
   name: DQN
   training:

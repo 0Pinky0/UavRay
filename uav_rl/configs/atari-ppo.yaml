@@ -2,14 +2,26 @@ train:
   load_weights: False
   offline: False
 env:
-  env: CartPole-v1
+  env: ALE/SpaceInvaders-v5
+  is_atari: True
 model:
   use_inverse_dynamic: False
-  channels_last: False
+  channels_last: True
   encoder_config: [
     {
-      model_name: 'mlp',
+      model_name: 'cnn',
       in_keys: [ 'observation' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        num_channels: [ 16, 32, 64 ],
+        kernel_sizes: 3,
+        activation_class: 'relu',
+        squash_last_layer: True,
+      },
+    },
+    {
+      model_name: 'mlp',
+      in_keys: [ 'logits' ],
       out_keys: [ 'logits' ],
       model_config: {
         out_features: 256,
@@ -19,13 +31,12 @@ model:
     },
   ]
 algo:
-  name: SAC
+  name: PPO
   training:
     lr: 3.0e-4
-    train_batch_size: 32
-    twin_q: True
-    initial_alpha: 1.0
-    target_entropy: null
+    train_batch_size: 4000
+    sgd_minibatch_size: 128
+    vf_loss_coeff: 0.01
 stop:
   training_iteration: 10_000
   timesteps_total: 100_000
