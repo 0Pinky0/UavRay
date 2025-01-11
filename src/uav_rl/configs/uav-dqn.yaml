@@ -1,0 +1,67 @@
+train:
+  load_weights: False
+  offline: False
+env:
+  env: UavEnv
+  is_atari: True
+  env_config:
+    dimensions: !!python/tuple [ 1000, 1000 ]
+    fixed_obstacles: 20
+    dynamic_obstacles: 20
+    occur_obstacles: 1
+    occur_number_max: 3
+    return_raster: True
+    prevent_stiff: False
+    use_lidar: True
+    draw_lidar: False
+    lidar_range: 250.0
+    lidar_rays: 42
+    field_of_view: 210.0
+    center_obstacles: True
+model:
+  use_inverse_dynamic: False
+  channels_last: True
+  encoder_config: [
+    {
+      model_name: 'cnn',
+      in_keys: [ 'raster' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        num_channels: [ 16, 32, 64, 64 ],
+        kernel_sizes: 3,
+        activation_class: 'relu',
+        squash_last_layer: True,
+      },
+    },
+    {
+      model_name: 'mlp',
+      in_keys: [ 'logits', 'observation' ],
+      out_keys: [ 'logits' ],
+      model_config: {
+        out_features: 256,
+        activation_class: 'relu',
+        activate_last_layer: True,
+      },
+    },
+  ]
+algo:
+  name: DQN
+  training:
+    lr: 3.0e-4
+    train_batch_size: 256
+    double_q: True
+    dueling: True
+    n_step: 1
+    hiddens: [ 256 ]
+    num_steps_sampled_before_learning_starts: 10000
+    target_network_update_freq: 400
+    replay_buffer_config:
+      type: MultiAgentPrioritizedReplayBuffer
+      capacity: 500000
+      prioritized_replay_alpha: 0.9
+      prioritized_replay_beta: 0.6
+      prioritized_replay_eps: 3.0e-6
+stop:
+  training_iteration: 10_000
+  timesteps_total: 1_000_000
+  episode_reward_mean: 1000.0

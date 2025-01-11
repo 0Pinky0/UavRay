@@ -9,8 +9,8 @@ from ray.rllib.offline.json_writer import JsonWriter
 
 from data.astar_actor import AstarActor
 from uav_envs import UavEnvironment
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from wrappers.pretext_wrapper import PretextWrapper
+from wrappers import RasterWrapper
 
 base_dir = Path(__file__).parent.parent
 env_cfg = yaml.load(open(f'{base_dir}/configs/env_astar_config.yaml'), Loader=yaml.FullLoader)["env"]

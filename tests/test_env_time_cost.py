@@ -1,8 +1,8 @@
 import gymnasium as gym
 from gymnasium.wrappers import HumanRendering
 import time
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from wrappers.pretext_wrapper import PretextWrapper
+from wrappers import RasterWrapper
 
 render = False
 env = gym.make(

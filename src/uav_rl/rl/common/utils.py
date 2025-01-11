@@ -41,7 +41,7 @@ def get_model_class(run_name: str) -> TorchModelV2:
     else:
         raise ValueError(f'Invalid run name: {run_name}')
 
-def get_config_cls(run_name: str):
+def get_config_cls(run_name: str) -> AlgorithmConfig:
     if run_name in _config_class_mapping:
         return _config_class_mapping[run_name]
     else:

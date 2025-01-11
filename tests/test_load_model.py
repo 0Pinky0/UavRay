@@ -3,7 +3,7 @@ from ray.rllib.models import ModelCatalog
 
 from models import UavEncoder
 from uav_envs import UavEnvironment
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from wrappers import RasterWrapper
 
 ModelCatalog.register_custom_model("cnn_qnet", UavEncoder)
 env = RasterWrapper(UavEnvironment())

@@ -44,9 +44,9 @@ class DqnModel(TorchModelV2, nn.Module):
     def forward(self, input_dict: dict[str, dict[str, torch.Tensor]], state=None, seq_lens=None):
         if isinstance(input_dict, dict) and 'obs' in input_dict:
             input_dict = input_dict['obs']
-        if self.channels_last:
-            input_dict = input_dict.permute(0, 3, 1, 2)
-        input_dict = input_dict.to(torch.float32)
+        # if self.channels_last:
+        #     input_dict = input_dict.permute(0, 3, 1, 2)
+        # input_dict = input_dict.to(torch.float32)
         if isinstance(input_dict, dict):
             input = TensorDict(input_dict)
         else:

@@ -12,7 +12,8 @@ ckpt_dir = './ckpt'
 train_one_step = False
 
 base_dir = Path(__file__).parent.parent
-run_cfg = yaml.load(open(f'../configs/atari-sac.yaml'), Loader=yaml.FullLoader)
+run_cfg = yaml.load(open(f'../configs/uav-dqn.yaml'), Loader=yaml.FullLoader)
+# run_cfg = yaml.load(open(f'../configs/cartpole-sac.yaml'), Loader=yaml.FullLoader)
 run_cfg['algo']['training'].update({
     '_enable_learner_api': False,
     'model': {
@@ -48,12 +49,35 @@ if args.evaluation_interval > 0:
 if __name__ == '__main__':
     config = (
         get_config_cls(run_cfg['algo']['name'])()
+        .exploration(
+            explore=True,
+            exploration_config={
+                "initial_epsilon": 0.9,
+                "final_epsilon": 0.05,
+                "epsilon_timesteps": 500_000,
+            },
+        )
         .rl_module(_enable_rl_module_api=False)
         .framework(framework="torch")
         .training(**run_cfg['algo']['training'])
-        .resources(num_gpus=0)
-        .rollouts(num_rollout_workers=3)
+        .resources(
+            num_gpus=1,
+        )
+        .rollouts(num_rollout_workers=12)
         .environment(**run_cfg['env'])
+        .evaluation(
+            evaluation_num_workers=1,
+            evaluation_interval=10,
+            evaluation_duration="auto",
+            evaluation_duration_unit="episodes",
+            evaluation_parallel_to_training=True,
+        )
+        # .reporting(
+        #     metrics_num_episodes_for_smoothing=1,
+        #     report_images_and_videos=True,
+        #     report_dream_data=False,
+        #     report_individual_batch_item_stats=False,
+        # )
     )
     if run_cfg['train']['offline']:
         config = (

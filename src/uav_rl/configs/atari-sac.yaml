@@ -35,7 +35,7 @@ algo:
   training:
     lr: 3.0e-4
     train_batch_size: 32
-    twin_q: True
+    twin_q: False
     initial_alpha: 1.0
     target_entropy: null
 stop:

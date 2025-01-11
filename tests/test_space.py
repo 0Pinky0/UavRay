@@ -4,8 +4,8 @@ from pathlib import Path
 import yaml
 
 from uav_envs import UavEnvironment
-from uav_envs.wrappers.pretext_wrapper import PretextWrapper
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+from wrappers.pretext_wrapper import PretextWrapper
+from wrappers import RasterWrapper
 
 base_dir = Path(__file__).parent.parent
 env_cfg = yaml.load(open(f'{base_dir}/configs/env_config.yaml'), Loader=yaml.FullLoader)['env']

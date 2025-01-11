@@ -7,6 +7,7 @@ from models.templates import (
     MLP,
     ConvNet,
     ResNetBlock,
+    ConvNetBlock,
     ImpalaNet,
 )
 import torch
@@ -16,6 +17,7 @@ model_mapping = {
     'mlp': MLP,
     'cnn': ConvNet,
     'resnet_block': ResNetBlock,
+    'impala_block': ConvNetBlock,
     'impala_net': ImpalaNet,
     'rnn': nn.RNN,
     'lstm': nn.LSTM,
