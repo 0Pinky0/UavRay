@@ -1,3 +1,4 @@
+import gymnasium as gym
 from pathlib import Path
 
 from ray.rllib.models import ModelCatalog
@@ -6,6 +7,7 @@ from ray.tune import register_env
 from models.dqn_model import DqnModel
 from .utils import get_policy_weights_from_checkpoint, get_model_class, get_config_cls
 from uav_envs import UavEnvironment
+# import uav_envs  # noqa
 # from uav_envs.wrappers.pretext_wrapper import PretextWrapper
 from uav_envs.wrappers.raster_wrapper import RasterWrapper
 
@@ -14,6 +16,10 @@ register_env(
     "UavEnv",
     lambda cfg: RasterWrapper(
         UavEnvironment(**cfg)
+        # gym.make(
+        #     'UavEnv-v7',
+        #     **cfg
+        # )
     )
 )
-ModelCatalog.register_custom_model("uav_encoder", DqnModel)
+# ModelCatalog.register_custom_model("uav_encoder", DqnModel)

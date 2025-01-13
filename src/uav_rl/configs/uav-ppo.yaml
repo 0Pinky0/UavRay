@@ -1,0 +1,38 @@
+train:
+  load_weights: False
+  offline: False
+env:
+  env: UavEnv
+  is_atari: True
+  env_config:
+    dimensions: !!python/tuple [ 1000, 1000 ]
+    fixed_obstacles: 20
+    dynamic_obstacles: 20
+    occur_obstacles: 1
+    occur_number_max: 3
+    return_raster: True
+    prevent_stiff: False
+    use_lidar: False
+    draw_lidar: False
+    lidar_range: 250.0
+    lidar_rays: 42
+    field_of_view: 210.0
+    center_obstacles: True
+model:
+  use_inverse_dynamic: False
+  channels_last: True
+algo:
+  name: PPO
+  training:
+    lr: 1.0e-3
+    lambda_: 0.95
+    num_sgd_iter: 64
+    train_batch_size: 4096
+    sgd_minibatch_size: 512
+    vf_loss_coeff: 3.0
+    clip_param: 0.2
+#    grad_clip: null
+stop:
+  training_iteration: 10_000
+  timesteps_total: 1_000_000
+  episode_reward_mean: 1000.0

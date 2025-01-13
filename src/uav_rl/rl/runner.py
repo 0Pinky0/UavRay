@@ -6,7 +6,9 @@ import yaml
 from ray import air, tune
 
 import common  # noqa
+import uav_envs  # noqa
 from rl.common import get_policy_weights_from_checkpoint, get_model_class, get_config_cls
+from models.lpp2d_model import UavCustomModel
 
 ckpt_dir = './ckpt'
 train_one_step = False
@@ -17,7 +19,8 @@ run_cfg = yaml.load(open(f'../configs/uav-dqn.yaml'), Loader=yaml.FullLoader)
 run_cfg['algo']['training'].update({
     '_enable_learner_api': False,
     'model': {
-        'custom_model': get_model_class(run_cfg['algo']['name']),
+        # 'custom_model': get_model_class(run_cfg['algo']['name']),
+        'custom_model': 'lpp2d_model',
         'custom_model_config': run_cfg['model']
     }
 })
@@ -54,7 +57,7 @@ if __name__ == '__main__':
             exploration_config={
                 "initial_epsilon": 0.9,
                 "final_epsilon": 0.05,
-                "epsilon_timesteps": 500_000,
+                "epsilon_timesteps": 80_000,
             },
         )
         .rl_module(_enable_rl_module_api=False)
@@ -62,16 +65,23 @@ if __name__ == '__main__':
         .training(**run_cfg['algo']['training'])
         .resources(
             num_gpus=1,
+            # num_cpus_per_worker=2,
+            # num_cpus_per_learner_worker=4,
         )
-        .rollouts(num_rollout_workers=12)
+        .rollouts(
+            num_rollout_workers=12,
+            rollout_fragment_length=40,
+            sample_async=True,
+        )
         .environment(**run_cfg['env'])
-        .evaluation(
-            evaluation_num_workers=1,
-            evaluation_interval=10,
-            evaluation_duration="auto",
-            evaluation_duration_unit="episodes",
-            evaluation_parallel_to_training=True,
-        )
+        .multi_agent(count_steps_by='agent_steps')
+        # .evaluation(
+        #     evaluation_num_workers=1,
+        #     evaluation_interval=10,
+        #     evaluation_duration="auto",
+        #     evaluation_duration_unit="episodes",
+        #     evaluation_parallel_to_training=True,
+        # )
         # .reporting(
         #     metrics_num_episodes_for_smoothing=1,
         #     report_images_and_videos=True,

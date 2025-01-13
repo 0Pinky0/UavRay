@@ -6,13 +6,13 @@ env:
   is_atari: True
   env_config:
     dimensions: !!python/tuple [ 1000, 1000 ]
-    fixed_obstacles: 20
-    dynamic_obstacles: 20
+    fixed_obstacles: 8
+    dynamic_obstacles: 3
     occur_obstacles: 1
     occur_number_max: 3
     return_raster: True
     prevent_stiff: False
-    use_lidar: True
+    use_lidar: False
     draw_lidar: False
     lidar_range: 250.0
     lidar_rays: 42
@@ -47,21 +47,22 @@ model:
 algo:
   name: DQN
   training:
-    lr: 3.0e-4
+    lr: 5.0e-4
     train_batch_size: 256
+    training_intensity: 20.0
     double_q: True
     dueling: True
     n_step: 1
-    hiddens: [ 256 ]
-    num_steps_sampled_before_learning_starts: 10000
+    hiddens: [ 256, 256 ]
+    num_steps_sampled_before_learning_starts: 5_000
     target_network_update_freq: 400
     replay_buffer_config:
       type: MultiAgentPrioritizedReplayBuffer
       capacity: 500000
-      prioritized_replay_alpha: 0.9
-      prioritized_replay_beta: 0.6
+      prioritized_replay_alpha: 0.6
+      prioritized_replay_beta: 0.4
       prioritized_replay_eps: 3.0e-6
 stop:
-  training_iteration: 10_000
+#  training_iteration: 10_000
   timesteps_total: 1_000_000
-  episode_reward_mean: 1000.0
+#  episode_reward_mean: 1000.0
