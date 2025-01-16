@@ -9,10 +9,12 @@ import common  # noqa
 import src.uav_rl.uav_envs  # noqa
 from src.uav_rl.rl.common import get_policy_weights_from_checkpoint, get_model_class, get_config_cls
 from src.uav_rl.models.lpp2d_model import UavCustomModel  # noqa
-from src.uav_rl.models.lpp2d_mlp import UavSimbaModel  # noqa
+from src.uav_rl.models.simba_encoder import UavSimbaModel  # noqa
 
 ckpt_dir = './ckpt'
 train_one_step = False
+# is_test = True
+is_test = False
 
 base_dir = Path(__file__).parent.parent
 run_cfg = yaml.load(open(f'../configs/uav-vec-dqn.yaml'), Loader=yaml.FullLoader)
@@ -58,19 +60,19 @@ if __name__ == '__main__':
             exploration_config={
                 "initial_epsilon": 0.9,
                 "final_epsilon": 0.05,
-                "epsilon_timesteps": 200_000,
+                "epsilon_timesteps": 80_000,
             },
         )
         .rl_module(_enable_rl_module_api=False)
         .framework(framework="torch")
         .training(**run_cfg['algo']['training'])
         .resources(
-            num_gpus=1,
+            num_gpus=0 if is_test else 1,
             # num_cpus_per_worker=2,
             # num_cpus_per_learner_worker=4,
         )
         .rollouts(
-            num_rollout_workers=8,
+            num_rollout_workers=0 if is_test else 8,
             rollout_fragment_length=40,
             # sample_async=True,
         )

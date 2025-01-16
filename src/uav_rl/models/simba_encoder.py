@@ -36,7 +36,7 @@ class UavSimbaModel(TorchModelV2, nn.Module):
         # Network parameters
         vec_dim = 8 + 42
         hidden_dim = num_outputs
-        use_silu = True
+        use_silu = False
 
         # Simba network
         fc_layer = nn.Linear(vec_dim, hidden_dim)
@@ -49,9 +49,9 @@ class UavSimbaModel(TorchModelV2, nn.Module):
         )
 
     def forward(self, input_dict, state, seq_lens):
-        obs = input_dict["obs"]
+        obs = input_dict['obs']['observation']
         embedding = self.encoder(obs)
         return embedding, state
 
 
-ModelCatalog.register_custom_model("simba", UavSimbaModel)
+ModelCatalog.register_custom_model('simba', UavSimbaModel)
