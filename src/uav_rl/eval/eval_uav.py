@@ -5,15 +5,16 @@ import numpy as np
 import torch
 from gymnasium.wrappers import HumanRendering
 from ray.rllib import Policy
-from models import lpp2d_model  # noqa
+from src.uav_rl.models import lpp2d_model  # noqa
 
-import uav_envs  # noqa
-from uav_envs.wrappers.raster_wrapper import RasterWrapper
+import src.uav_rl.uav_envs  # noqa
+from src.uav_rl.uav_envs.wrappers.raster_wrapper import RasterWrapper
+from src.uav_rl.uav_envs.uav_env_v7 import UavEnvironment
 
 render = True
 # render = False
 
-ckpt_name = 'DQN_2025-01-13_18-17-24\DQN_UavEnv_95917_00000_0_2025-01-13_18-17-25\checkpoint_000041'
+ckpt_name = 'DQN_2025-01-13_23-29-18\DQN_UavEnv_27aa2_00000_0_2025-01-13_23-29-18\checkpoint_000044'
 # ckpt_name = 'DQN_2024-10-16_14-09-05/DQN_UavEnv_27d50_00000_0_2024-10-16_14-09-08/checkpoint_000071'
 ckpt_name = ckpt_name.replace('\\', '/')
 rlmodule_ckpt = f'/home/wjl/ray_results/{ckpt_name}/policies/default_policy'
@@ -23,17 +24,16 @@ loaded_policy = Policy.from_checkpoint(rlmodule_ckpt)
 # )
 
 env = RasterWrapper(
-    gym.make(
-        "UavEnv-v7",
+    UavEnvironment(
         render_mode='rgb_array',
         dimensions=[1000, 1000],
-        fixed_obstacles=20,
-        dynamic_obstacles=20,
+        fixed_obstacles=8,
+        dynamic_obstacles=3,
         occur_obstacles=1,
         occur_number_max=3,
-        return_raster=True,
+        return_raster=False,
         prevent_stiff=False,
-        use_lidar=False,
+        use_lidar=True,
         draw_lidar=False,
         lidar_range=250.0,
         lidar_rays=42,

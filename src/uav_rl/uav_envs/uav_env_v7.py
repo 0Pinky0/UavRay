@@ -11,7 +11,7 @@ import pygame as pg
 import pygame.freetype as pgft
 from gymnasium.utils import seeding
 
-from utils.lidar import Point2d, Structure, Lidar
+from .utils.lidar import Point2d, Structure, Lidar
 
 root = os.path.dirname(os.path.abspath(__file__))
 uav = pg.image.load(os.path.join(root, "res/uav2.jpg"))

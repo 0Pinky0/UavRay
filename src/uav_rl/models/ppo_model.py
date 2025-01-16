@@ -9,8 +9,8 @@ from ray.rllib.utils.typing import ModelConfigDict, TensorType
 from tensordict import TensorDict
 from torch import nn
 
-from models.templates.model_constructor import get_constructed_model
-from models.modules.inverse_dynamics import InverseDynamic
+from src.uav_rl.models.templates.model_constructor import get_constructed_model
+from src.uav_rl.models.modules.inverse_dynamics import InverseDynamic
 
 
 class PpoModel(TorchModelV2, nn.Module):

@@ -7,9 +7,9 @@ from ray.rllib.algorithms.sac import SACConfig
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
 from ray.train import Checkpoint
 
-from models.dqn_model import DqnModel
-from models.ppo_model import PpoModel
-from models.sac_model import SacModel
+from src.uav_rl.models.dqn_model import DqnModel
+from src.uav_rl.models.ppo_model import PpoModel
+from src.uav_rl.models.sac_model import SacModel
 
 _model_class_mapping = {
     'DQN': DqnModel,

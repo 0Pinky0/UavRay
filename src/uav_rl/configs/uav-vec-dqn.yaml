@@ -2,7 +2,7 @@ train:
   load_weights: False
   offline: False
 env:
-  env: UavEnv
+  env: UavEnvVec
   is_atari: True
   env_config:
     dimensions: !!python/tuple [ 1000, 1000 ]
@@ -10,9 +10,9 @@ env:
     dynamic_obstacles: 3
     occur_obstacles: 1
     occur_number_max: 3
-    return_raster: True
+    return_raster: False
     prevent_stiff: False
-    use_lidar: False
+    use_lidar: True
     draw_lidar: False
     lidar_range: 250.0
     lidar_rays: 42
@@ -54,7 +54,7 @@ algo:
     double_q: True
     dueling: True
     n_step: 1
-    hiddens: [ 256, 256 ]
+    hiddens: [ 256 ]
     num_steps_sampled_before_learning_starts: 5_000
 #    target_network_update_freq: 120
     target_network_update_freq: 1
