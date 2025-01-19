@@ -3,7 +3,7 @@ train:
   offline: False
 env:
   env: UavEnv
-  is_atari: True
+  is_atari: False
   env_config:
     dimensions: !!python/tuple [ 1000, 1000 ]
     fixed_obstacles: 8
@@ -50,18 +50,18 @@ algo:
     lr: 5.0e-4
     gamma: 0.99
     train_batch_size: 256
-    training_intensity: 20.0
+#    training_intensity: 20.0
     double_q: True
     dueling: True
     n_step: 1
     hiddens: [ 256, 256 ]
     num_steps_sampled_before_learning_starts: 5_000
-#    target_network_update_freq: 120
-    target_network_update_freq: 1
-    tau: 0.997
+    target_network_update_freq: 400
+#    target_network_update_freq: 1
+#    tau: 0.997
     replay_buffer_config:
       type: MultiAgentPrioritizedReplayBuffer
-      capacity: 500000
+      capacity: 200_000
       prioritized_replay_alpha: 0.6
       prioritized_replay_beta: 0.4
       prioritized_replay_eps: 3.0e-6

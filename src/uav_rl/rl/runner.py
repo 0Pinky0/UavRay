@@ -17,13 +17,14 @@ train_one_step = False
 is_test = False
 
 base_dir = Path(__file__).parent.parent
-run_cfg = yaml.load(open(f'../configs/uav-vec-dqn.yaml'), Loader=yaml.FullLoader)
+run_cfg = yaml.load(open(f'../configs/uav-dqn.yaml'), Loader=yaml.FullLoader)
 # run_cfg = yaml.load(open(f'../configs/cartpole-sac.yaml'), Loader=yaml.FullLoader)
 run_cfg['algo']['training'].update({
     '_enable_learner_api': False,
     'model': {
         # 'custom_model': get_model_class(run_cfg['algo']['name']),
-        'custom_model': 'simba',
+        # 'custom_model': 'simba',
+        'custom_model': 'lpp2d_model',
         'custom_model_config': run_cfg['model']
     }
 })
@@ -72,12 +73,13 @@ if __name__ == '__main__':
             # num_cpus_per_learner_worker=4,
         )
         .rollouts(
-            num_rollout_workers=0 if is_test else 8,
-            rollout_fragment_length=40,
+            num_rollout_workers=0 if is_test else 4,
+            rollout_fragment_length=10,
             # sample_async=True,
         )
         .environment(**run_cfg['env'])
-        .multi_agent(count_steps_by='agent_steps')
+        .multi_agent(count_steps_by='env_steps')
+        .reporting(min_sample_timesteps_per_iteration=40)
         # .evaluation(
         #     evaluation_num_workers=1,
         #     evaluation_interval=10,
@@ -106,7 +108,11 @@ if __name__ == '__main__':
         )
     algo = config.build()
     if run_cfg['train']['load_weights']:
-        algo.set_weights(get_policy_weights_from_checkpoint('./ckpt'))
+        algo.set_weights(
+            get_policy_weights_from_checkpoint(
+                '/home/wjl/ray_results/DQN_2025-01-16_12-27-56/DQN_UavEnvVec_42c15_00000_0_2025-01-16_12-27-56/checkpoint_000020'
+            )
+        )
     if train_one_step:
         results = algo.train()
     else:
@@ -117,7 +123,7 @@ if __name__ == '__main__':
                 # stop=run_cfg['stop'],
                 verbose=2,
                 checkpoint_config=air.CheckpointConfig(
-                    checkpoint_frequency=5,
+                    checkpoint_frequency=400,
                     checkpoint_at_end=True,
                 ),
             ),
