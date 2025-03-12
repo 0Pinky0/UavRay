@@ -59,7 +59,7 @@ if __name__ == '__main__':
         .exploration(
             explore=True,
             exploration_config={
-                "initial_epsilon": 0.9,
+                "initial_epsilon": 0.6,
                 "final_epsilon": 0.05,
                 "epsilon_timesteps": 80_000,
             },
@@ -73,8 +73,8 @@ if __name__ == '__main__':
             # num_cpus_per_learner_worker=4,
         )
         .rollouts(
-            num_rollout_workers=0 if is_test else 4,
-            rollout_fragment_length=10,
+            num_rollout_workers=0 if is_test else 8,
+            rollout_fragment_length=5,
             # sample_async=True,
         )
         .environment(**run_cfg['env'])
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     if run_cfg['train']['load_weights']:
         algo.set_weights(
             get_policy_weights_from_checkpoint(
-                '/home/wjl/ray_results/DQN_2025-01-16_12-27-56/DQN_UavEnvVec_42c15_00000_0_2025-01-16_12-27-56/checkpoint_000020'
+                '/home/wjl/ray_results/DQN_2025-01-19_17-30-04/DQN_UavEnv_f6f54_00000_0_2025-01-19_17-30-04/checkpoint_000015'
             )
         )
     if train_one_step:

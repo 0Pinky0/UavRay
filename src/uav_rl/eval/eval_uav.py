@@ -14,7 +14,7 @@ from src.uav_rl.uav_envs.uav_env_v7 import UavEnvironment
 render = True
 # render = False
 
-ckpt_name = 'DQN_2025-01-13_23-29-18\DQN_UavEnv_27aa2_00000_0_2025-01-13_23-29-18\checkpoint_000044'
+ckpt_name = 'DQN_2025-01-20_11-37-28\DQN_UavEnv_df7af_00000_0_2025-01-20_11-37-28\checkpoint_000018'
 # ckpt_name = 'DQN_2024-10-16_14-09-05/DQN_UavEnv_27d50_00000_0_2024-10-16_14-09-08/checkpoint_000071'
 ckpt_name = ckpt_name.replace('\\', '/')
 rlmodule_ckpt = f'/home/wjl/ray_results/{ckpt_name}/policies/default_policy'
@@ -27,18 +27,18 @@ env = RasterWrapper(
     UavEnvironment(
         render_mode='rgb_array',
         dimensions=[1000, 1000],
-        fixed_obstacles=8,
-        dynamic_obstacles=3,
+        fixed_obstacles=20,
+        dynamic_obstacles=20,
         occur_obstacles=1,
         occur_number_max=3,
-        return_raster=False,
+        return_raster=True,
         prevent_stiff=False,
-        use_lidar=True,
+        use_lidar=False,
         draw_lidar=False,
         lidar_range=250.0,
         lidar_rays=42,
         field_of_view=210.0,
-        center_obstacles=True,
+        center_obstacles=False,
     )
 )
 # env = gym.make(

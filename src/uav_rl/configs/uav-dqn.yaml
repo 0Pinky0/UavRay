@@ -1,13 +1,13 @@
 train:
-  load_weights: False
+  load_weights: True
   offline: False
 env:
   env: UavEnv
   is_atari: False
   env_config:
     dimensions: !!python/tuple [ 1000, 1000 ]
-    fixed_obstacles: 8
-    dynamic_obstacles: 3
+    fixed_obstacles: 20
+    dynamic_obstacles: 20
     occur_obstacles: 1
     occur_number_max: 3
     return_raster: True
@@ -61,7 +61,7 @@ algo:
 #    tau: 0.997
     replay_buffer_config:
       type: MultiAgentPrioritizedReplayBuffer
-      capacity: 200_000
+      capacity: 500_000
       prioritized_replay_alpha: 0.6
       prioritized_replay_beta: 0.4
       prioritized_replay_eps: 3.0e-6
